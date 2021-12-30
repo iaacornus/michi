@@ -1,6 +1,8 @@
 import os
 import discord
 from discord import user
+from discord import message
+from discord.errors import ClientException
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -13,17 +15,16 @@ from func import get_defin
 
 load_dotenv()
 
+"""REPLACE THESE"""
 TOKEN = #<TOKEN> os.getenv("DISCORD_TOKEN")
-my_id = <ID>
+my_id = #<ID>
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
-bot = commands.Bot(command_prefix="--")
-client = discord.Client()
+client = commands.Bot(command_prefix="--")
 
 interesting = ["physics", "science", "chemistry", "multiverse", "time", "travel", "wormholes", "biology", "do you know", "know", "what", "interesting", "iaacornus", "cell", "culture", "virus", "molecule", "chem", "bio", "thermodynamics"]
 
 print("STARTING BOT")
-
 
 @client.event
 async def on_ready():
@@ -39,30 +40,51 @@ async def on_message(message):
     if x in message.content.lower():
       await message.channel.send(f"<@{my_id}> there's something interesting...")
       
-  if message.content.lower() == "--topic":
-    sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
-    link = "https://www.livescience.com/" + random.choice(sections)
-    print(link)
-    page = requests.get(link)
+  await client.process_commands(message)
 
-    if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
+@client.command(name="topic")
+async def topic(ctx):
+  sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
+  link = "https://www.livescience.com/" + random.choice(sections)
+  page = requests.get(link)
+
+  if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
+    await ctx.channel.send(f"<@{message.author.id}> the source is unfortunately down ...")
+  else:
+    soup = bs(page.content, "html.parser")
+    topics = (soup.find_all("h3", class_="article-name"))
+
+  topic = str(random.choice(topics))[25:-5]
+  for x in range(10):
+    if ("top" or str(x) or "top " + str(x) or "best") in str(topic):
       pass
-      #await message.channel.send(f"{message.author.mention} the source is unfortunately down ...")
-    else:
-      soup = bs(page.content, "html.parser")
-      topics = (soup.find_all("h3", class_="article-name"))
+    else :
+      dec = topic
 
-    topic = str(random.choice(topics))[25:-5]
-    for x in range(10):
-      if ("top" or str(x) or "top " + str(x)) in str(topic):
-        pass
-      else :
-        dec = topic
-    await message.channel.send(f"<@{message.author.id}> {dec}")
+  await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
 
 
-@client.command()
-async def get_def(ctx, word):
-  await ctx.channel.send(get_defin(word))
+@client.command(name="define")
+async def wiki(ctx, word):
+  mess = get_defin(word)
+
+  if len(mess) > 1800:
+    wc = len(mess) ; delimiter = 1800 ; start = 0
+    stop = False
+
+    while stop is False:
+      
+      if wc > 1800 :
+        await ctx.channel.send(f"<@{ctx.author.id}> {str(mess)[start:delimiter]}-")
+        start += 1800 ; delimiter += 1800 ; wc -= 1800      
+      elif wc < 1800:
+        await ctx.channel.send(f"-{str(mess)[start:delimiter-wc]}")
+        stop = True
+
+  else:
+    await ctx.channel.send(mess)
+
+
 
 client.run(TOKEN)
+
