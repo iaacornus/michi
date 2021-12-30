@@ -13,13 +13,14 @@ def get_defin(define):
   alpha = list("abcdefghijklmnopqrstuvwxyz")
   ALPHA = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
+
   comb = []
   for x in ALPHA:
     for y in alpha:
       comb.append(x+y)
 
   if page_py.exists() is True:
-    defi = page_py.summary
+    defi = f"{page_py.summary}\n\nFull URL = {page_py.fullurl}\nCanonical URL = {page_py.canonicalurl}"
     
   else:
     if (define[0].upper()+define[1].lower()) not in comb:
@@ -43,4 +44,5 @@ def get_defin(define):
       hi = max(dic, key=dic.get)
       defi = f"Maybe you mean {dic[hi]}?"
   
+
   return defi
