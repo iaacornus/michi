@@ -9,6 +9,7 @@ import urllib.request
 import random
 import requests
 
+from func import get_defin
 
 load_dotenv()
 
@@ -16,6 +17,7 @@ TOKEN = #<TOKEN> os.getenv("DISCORD_TOKEN")
 my_id = <ID>
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
+bot = commands.Bot(command_prefix="--")
 client = discord.Client()
 
 interesting = ["physics", "science", "chemistry", "multiverse", "time", "travel", "wormholes", "biology", "do you know", "know", "what", "interesting", "iaacornus", "cell", "culture", "virus", "molecule", "chem", "bio", "thermodynamics"]
@@ -58,6 +60,9 @@ async def on_message(message):
         dec = topic
     await message.channel.send(f"<@{message.author.id}> {dec}")
 
-  
+
+@client.command()
+async def get_def(ctx, word):
+  await ctx.channel.send(get_defin(word))
+
 client.run(TOKEN)
-print("OK")
