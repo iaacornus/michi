@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from discord.ext import commands
 
 from func import get_defin, give_topic
+from params import interesting, scam
+
+from difflib import SequenceMatcher
 
 load_dotenv()
 
@@ -16,8 +19,6 @@ my_id = #<ID>
 
 client = commands.Bot(command_prefix="--")
 
-interesting = ["physics", "science", "chemistry", "multiverse", "time", "travel", "wormholes", "biology", "do you know",
-               "know", "what", "interesting", "iaacornus", "cell", "culture", "virus", "molecule", "chem", "bio", "thermodynamics"]
 
 print("STARTING BOT")
 
@@ -31,18 +32,29 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    for x in interesting:
-        if x in message.content.lower():
-            await message.channel.send(f"<@{my_id}> there's something interesting...")
-            
+    ratio = []
+    for x in interesting().interesting:
+        for y in message.content.lower().split(' '):  
+            ratio.append(SequenceMatcher(None, y, x).ratio())
+
+    if max(ratio) > 0.75:
+        await message.channel.send(f"<@{my_id}> there's something interesting...")   
+     
+    for x, z in zip(scam().scams, scam().scam_link):
+        if (SequenceMatcher(None, message.content.lower(), x).ratio() > 0.35) or SequenceMatcher(None, message.content.lower(), z).ratio() > 0.35:
+            await message.delete()
+            await message.channel.send(f"<@{message.author.id}> no scam links ...")
+            break
+
     await client.process_commands(message)
+
 
 @client.command(name="topic")
 async def topic(ctx):
     dec = give_topic()
     
     if dec is False:
-        await ctx.channel.send(f"<@{message.author.id}> the source is unfortunately down ...")
+        await ctx.channel.send(f"<@{ctx.author.id}> the source is unfortunately down ...")
     else:
         await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
 
@@ -75,7 +87,6 @@ async def wiki(ctx, word):
         else:
             await ctx.channel.send(f"<@{ctx.author.id}> {mess}")
             await ctx.channel.send(url)
-
 
 
 client.run(TOKEN)
