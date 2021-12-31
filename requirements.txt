@@ -1,0 +1,6 @@
+bs4
+pyenchant
+requests
+discord.py
+python-dotenv
+wikipedia-api
