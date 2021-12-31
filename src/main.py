@@ -5,7 +5,7 @@ from discord.errors import ClientException
 from dotenv import load_dotenv
 from discord.ext import commands
 
-from func import get_defin, give_topic
+from func import get_defin, give_topic, bio_abs
 from params import params
 
 import re
@@ -74,6 +74,15 @@ async def wiki(ctx, word):
 
     else:
         await ctx.channel.send(f"<@{ctx.author.id}> {mess}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {mess}\n{url}")
+     
+     
+@client.command(name="abs-bio")
+async def absBio(ctx, link):
+    absBio, url = bio_abs(link)
+
+    await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {absBio}\n{url}")
+     
+    
      
 
 client.run(TOKEN)
