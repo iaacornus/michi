@@ -5,7 +5,9 @@ class scam:
              "you become a random winner in our giveaway", "to help in this, our company has decided to host a major raffle of funds",
              "you won btc", "you won crypto", "free gift discord nitro", "free nitro", "free nitro giveaway", "free discord nitro for 1 month",
              "free nitro", "I have left", "giveaway", "crypto giveaway", "free crypto", "free btc", "i offer a free adult membership",
-             "dm me for the link", "I have a free offer dm me for the link", "I have a free nitro dm me", "I have a free offer, dm me"]
+             "dm me for the link", "I have a free offer dm me for the link", "I have a free nitro dm me", "I have a free offer, dm me",
+            "this is a free nitro link, just message me", "free crypto giveaway", "i offer you free nitro", "i offer you free crypto",
+            "i offer you a free btc", "a free btc offer", "a free nitro offer from our company"]
     
     scam_link = ["https://discordsgift.com/", "https://freenitrogiveaway.com/", "https://discordnitro.com/", "https://.xyz", "http://.xyz",
                  "http://.zy"]
