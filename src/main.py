@@ -36,7 +36,8 @@ async def on_message(message):
         for y in message.content.lower().split(' '):  
             ratio.append(SequenceMatcher(None, y, x).ratio())
 
-    await message.channel.send(f"<@{my_id}> there's something interesting...") if max(ratio) > 0.75 else pass
+    if max(ratio) > 0.75:
+        await message.channel.send(f"<@{my_id}> there's something interesting...") 
            
     for x, z in zip(scam().scams, scam().scam_link):
         if (SequenceMatcher(None, message.content.lower(), x).ratio() > 0.35) or SequenceMatcher(None, message.content.lower(), z).ratio() > 0.35:
