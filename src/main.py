@@ -15,7 +15,6 @@ load_dotenv()
 
 """REPLACE THESE"""
 TOKEN = #<TOKEN> os.getenv("DISCORD_TOKEN")
-my_id = #<ID>
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
 client = commands.Bot(command_prefix="--")
@@ -32,28 +31,39 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    # scam filter
+    ratio = []
     for x in params().scams:
-        if SequenceMatcher(None, message.content.lower(), x.lower()).ratio() > 0.65:
-            await message.delete()
-            await message.channel.send(f"<@{message.author.id}> no scam links ...")
-            break
-    
-    
+        ratio.append(SequenceMatcher(None, x.lower(), message.content.lower()).ratio())
+        
+    if (sum(ratio)/(len(params().scams)) > 0.2) and (max(ratio) > 0.85):    
+        await message.delete()
+        await message.channel.send(f"<@{message.author.id}> no scam links ...")
+        
+    # thank you card
     for x in params().thank_message:
-        if re.match(f"^{x[:round(len(x)/2)]}.*", message.content.lower(), re.IGNORECASE):
-            await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
-            break
+        for y in message.content.lower().split(' '):
+            if re.match(f"^{x[:round(len(x)/2)]}.*", y, re.IGNORECASE):
+                
+                await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
+                
+        break
     
+    # hydroxide!
+    if message.content.lower() == "oh":
+        await message.channel.send("HYDROXIDE :test_tube:")
+            
     await client.process_commands(message)
 
 
-@client.command(name="topic")
+@client.command(name="topic", help="This function gives a topic from the science news for the week reported by LiveScience.")
 async def topic(ctx):
     dec = give_topic()
 
     await ctx.channel.send(f"<@{ctx.author.id}> the source is unfortunately down ...") if dec is False else await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
 
-@client.command(name="define")
+
+@client.command(name="define", help="This defines a given word/phrase using the summary from wikipedia.")
 async def wiki(ctx, word):
     mess, url = get_defin(word)
 
@@ -76,7 +86,7 @@ async def wiki(ctx, word):
         await ctx.channel.send(f"<@{ctx.author.id}> {mess}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {mess}\n{url}")
      
      
-@client.command(name="abs-bio")
+@client.command(name="abs-bio", help="This returns the abstract of a given PubMed link.")
 async def absBio(ctx, link):
     absBio, url = bio_abs(link)
     
@@ -97,8 +107,7 @@ async def absBio(ctx, link):
 
     else:
         await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {absBio}\n{url}")     
+        
     
-     
-
 client.run(TOKEN)
 
