@@ -21,14 +21,13 @@ def give_topic():
             topics = (soup.find_all("h3", class_="article-name"))
 
             topic = str(random.choice(topics))[25:-5]
-            for x in range(10):
+            for x in range(100):
                 if ("top" or str(x) or "top " + str(x) or "best") in str(topic):
                     continue
                 
                 else :
                     return topic
     
-
 
 def get_defin(define):
     wiki_wiki = wikipediaapi.Wikipedia('en')
@@ -43,10 +42,9 @@ def get_defin(define):
             comb.append(x+y)
 
     if page_py.exists() is True:
-        defi = f"{str(page_py.summary)}"
-        url = f"Full URL = {page_py.fullurl}\nCanonical URL = {page_py.canonicalurl}"
         
-        return defi, url
+        return f"{str(page_py.summary)}", f"Full URL = {page_py.fullurl}\nCanonical URL = {page_py.canonicalurl}"
+
     else:
         if (define[0].upper()+define[1].lower()) not in comb:
             return "the given term is not in Wikipedia, kindly correct the term and try again.", 0
