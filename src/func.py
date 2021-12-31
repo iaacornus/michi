@@ -11,12 +11,12 @@ def give_topic():
     while True:
         sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
         link = "https://www.livescience.com/" + random.choice(sections)
-        page = requests.get(link)
-
+        
         if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-            return False
+            return "Ooppsss..., the link you gave is wrong...\nor down I guess?", 0
             
         else:
+            page = requests.get(link)
             soup = bs(page.content, "html.parser")
             topics = (soup.find_all("h3", class_="article-name"))
 
@@ -58,4 +58,20 @@ def get_defin(define):
                 lang.check(define)
 
                 return f"maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}", 0
-              
+
+def bio_abs(link):
+    
+    if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
+        return "Ooppsss..., the link you gave is wrong...\nor down I guess?", 0
+        
+    else:
+        page = requests.get(link)
+        soup = bs(page.content, "html.parser")
+        results = (soup.find_all("div", id="enc-abstract"))
+
+        for x in results:
+            abio = x.find('p').get_text().rstrip()
+
+        return abio, link
+    
+     
