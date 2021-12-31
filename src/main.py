@@ -1,4 +1,3 @@
-import os
 import discord
 from discord import user
 from discord import message
@@ -6,12 +5,7 @@ from discord.errors import ClientException
 from dotenv import load_dotenv
 from discord.ext import commands
 
-from bs4 import BeautifulSoup as bs
-import urllib.request
-import random
-import requests
-
-from func import get_defin
+from func import get_defin, give_topic
 
 load_dotenv()
 
@@ -45,25 +39,12 @@ async def on_message(message):
 
 @client.command(name="topic")
 async def topic(ctx):
-    sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
-    link = "https://www.livescience.com/" + random.choice(sections)
-    page = requests.get(link)
-
-    if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
+    dec = give_topic()
+    
+    if dec is False:
         await ctx.channel.send(f"<@{message.author.id}> the source is unfortunately down ...")
     else:
-        soup = bs(page.content, "html.parser")
-        topics = (soup.find_all("h3", class_="article-name"))
-
-    topic = str(random.choice(topics))[25:-5]
-    for x in range(10):
-        if ("top" or str(x) or "top " + str(x) or "best") in str(topic):
-            pass
-        else :
-            dec = topic
-
-    await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
-
+        await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
 
 @client.command(name="define")
 async def wiki(ctx, word):
