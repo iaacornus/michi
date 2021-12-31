@@ -1,4 +1,4 @@
-class scam:
+class params:
     scams = ["the crypto giveaway! congratulations! You have been selected a random user in our big giveaways!",
              "the cryptobtc giveaway! congratulations!","You have been selected a random user in our big giveaways!",
              "crypto has decided to host a big giveaway cryptocurrencies", "the giveaway", "you become a random winner",
@@ -6,14 +6,9 @@ class scam:
              "you won btc", "you won crypto", "free gift discord nitro", "free nitro", "free nitro giveaway", "free discord nitro for 1 month",
              "free nitro", "I have left", "giveaway", "crypto giveaway", "free crypto", "free btc", "i offer a free adult membership",
              "dm me for the link", "I have a free offer dm me for the link", "I have a free nitro dm me", "I have a free offer, dm me",
-            "this is a free nitro link, just message me", "free crypto giveaway", "i offer you free nitro", "i offer you free crypto",
-            "i offer you a free btc", "a free btc offer", "a free nitro offer from our company"]
-    
-    scam_link = ["https://discordsgift.com/", "https://freenitrogiveaway.com/", "https://discordnitro.com/", "https://.xyz", "http://.xyz",
+             "i have a free nitro link", "free nitro", "free link", "i have a free discord nitro", "i have a free discord link",
+             "free discord nitro link", "https://discordsgift.com/", "https://freenitrogiveaway.com/", "https://discordnitro.com/", "https://.xyz", "http://.xyz",
                  "http://.zy"]
     
-        
-class interesting:
-    interesting = ["physics", "science", "chemistry", "multiverse", "time", "travel", "wormholes", "biology", "do you know",
-               "know", "what", "interesting", "iaacornus", "cell", "culture", "virus", "molecule", "chem", "bio", "thermodynamics",
-               "blachhole"]
+    thank_message = ["thanks", "thank you", "thx", "thank", "thank you very much", "arigato", "arigatogozaimasu",
+                     "gozaimasu", "arigatou", "arigatogozaimas", "mercie", "gracias", "gamsa", "gamsa hayeo"]
