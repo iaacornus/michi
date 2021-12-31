@@ -19,7 +19,6 @@ my_id = #<ID>
 
 client = commands.Bot(command_prefix="--")
 
-
 print("STARTING BOT")
 
 @client.event
@@ -37,9 +36,8 @@ async def on_message(message):
         for y in message.content.lower().split(' '):  
             ratio.append(SequenceMatcher(None, y, x).ratio())
 
-    if max(ratio) > 0.75:
-        await message.channel.send(f"<@{my_id}> there's something interesting...")   
-     
+    await message.channel.send(f"<@{my_id}> there's something interesting...") if max(ratio) > 0.75 else pass
+           
     for x, z in zip(scam().scams, scam().scam_link):
         if (SequenceMatcher(None, message.content.lower(), x).ratio() > 0.35) or SequenceMatcher(None, message.content.lower(), z).ratio() > 0.35:
             await message.delete()
@@ -52,11 +50,8 @@ async def on_message(message):
 @client.command(name="topic")
 async def topic(ctx):
     dec = give_topic()
-    
-    if dec is False:
-        await ctx.channel.send(f"<@{ctx.author.id}> the source is unfortunately down ...")
-    else:
-        await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
+
+    await ctx.channel.send(f"<@{ctx.author.id}> the source is unfortunately down ...") if dec is False else await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
 
 @client.command(name="define")
 async def wiki(ctx, word):
@@ -69,11 +64,7 @@ async def wiki(ctx, word):
         while stop is False:
             
             if wc > 1800 :
-                if start == 0:
-                    await ctx.channel.send(f"<@{ctx.author.id}> {str(mess)[start:delimiter]}-")
-                else:
-                    await ctx.channel.send(f"-{str(mess)[start:delimiter]}-")
-                
+                await ctx.channel.send(f"<@{ctx.author.id}> {str(mess)[start:delimiter]}-") if start == 0 else await ctx.channel.send(f"-{str(mess)[start:delimiter]}-")
                 start += 1800 ; delimiter += 1800 ; wc -= 1800      
                 
             elif wc < 1800:
@@ -82,12 +73,8 @@ async def wiki(ctx, word):
                 stop = True
 
     else:
-        if url == 0:
-            await ctx.channel.send(f"<@{ctx.author.id}> {mess}")
-        else:
-            await ctx.channel.send(f"<@{ctx.author.id}> {mess}")
-            await ctx.channel.send(url)
-
+        await ctx.channel.send(f"<@{ctx.author.id}> {mess}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {mess}\n{url}")
+     
 
 client.run(TOKEN)
 
