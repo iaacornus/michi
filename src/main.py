@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 from discord.ext import commands
 
 from func import get_defin, give_topic
-from params import interesting, scam
+from params import params
 
+import re
 from difflib import SequenceMatcher
 
 load_dotenv()
@@ -31,20 +32,18 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    ratio = []
-    for x in interesting().interesting:
-        for y in message.content.lower().split(' '):  
-            ratio.append(SequenceMatcher(None, y, x).ratio())
-
-    if max(ratio) > 0.75:
-        await message.channel.send(f"<@{my_id}> there's something interesting...") 
-           
-    for x, z in zip(scam().scams, scam().scam_link):
-        if (SequenceMatcher(None, message.content.lower(), x).ratio() > 0.35) or SequenceMatcher(None, message.content.lower(), z).ratio() > 0.35:
+    for x in params().scams:
+        if SequenceMatcher(None, message.content.lower(), x.lower()).ratio() > 0.65:
             await message.delete()
             await message.channel.send(f"<@{message.author.id}> no scam links ...")
             break
-
+    
+    
+    for x in params().thank_message:
+        if re.match(f"^{x[:round(len(x)/2)]}.*", message.content.lower(), re.IGNORECASE):
+            await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
+            break
+    
     await client.process_commands(message)
 
 
