@@ -43,3 +43,11 @@ The bot is currently in development phase, the link would be posted as soon as i
 - [ ] Scientific paper abstract return
 - [ ] Scientific calculation
 - [ ] Simple science questions answer
+
+# Contribution
+
+For contribution, just make a pull request and the code changes would be reviewed for merging with the branch.
+
+Join the [discord server](https://discord.gg/auArnV8Yz2) for testing ! :
+
+https://discord.gg/auArnV8Yz2
