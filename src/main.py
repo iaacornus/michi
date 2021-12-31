@@ -79,9 +79,24 @@ async def wiki(ctx, word):
 @client.command(name="abs-bio")
 async def absBio(ctx, link):
     absBio, url = bio_abs(link)
+    
+    if len(absBio) > 1800:
+        wc = len(absBio) ; delimiter = 1800 ; start = 0
+        stop = False
 
-    await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {absBio}\n{url}")
-     
+        while stop is False:
+            
+            if wc > 1800 :
+                await ctx.channel.send(f"<@{ctx.author.id}> {str(absBio)[start:delimiter]}-") if start == 0 else await ctx.channel.send(f"-{str(absBio)[start:delimiter]}-")
+                start += 1800 ; delimiter += 1800 ; wc -= 1800      
+                
+            elif wc < 1800:
+                await ctx.channel.send(f"-{str(absBio)[start:delimiter+wc]}")
+                await ctx.channel.send(url)
+                stop = True
+
+    else:
+        await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {absBio}\n{url}")     
     
      
 
