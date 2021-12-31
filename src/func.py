@@ -7,25 +7,26 @@ import random
 from bs4 import BeautifulSoup as bs
 
 def give_topic():
-    sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
-    link = "https://www.livescience.com/" + random.choice(sections)
-    page = requests.get(link)
-
-    if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-        return False
     
-    else:
-        soup = bs(page.content, "html.parser")
-        topics = (soup.find_all("h3", class_="article-name"))
+    while True:
+        sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
+        link = "https://www.livescience.com/" + random.choice(sections)
+        page = requests.get(link)
 
-        topic = str(random.choice(topics))[25:-5]
-        for x in range(10):
-            if ("top" or str(x) or "top " + str(x) or "best") in str(topic):
-                pass
-            else :
-                dec = topic
+        if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
+            return False
+            
+        else:
+            soup = bs(page.content, "html.parser")
+            topics = (soup.find_all("h3", class_="article-name"))
 
-        return dec
+            topic = str(random.choice(topics))[25:-5]
+            for x in range(10):
+                if ("top" or str(x) or "top " + str(x) or "best") in str(topic):
+                    continue
+                
+                else :
+                    return topic
     
 
 
