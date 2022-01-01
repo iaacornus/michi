@@ -6,6 +6,9 @@ import requests
 import random
 from bs4 import BeautifulSoup as bs
 
+import json
+import re
+
 def give_topic():
     
     while True:
@@ -73,5 +76,36 @@ def bio_abs(link):
             abio = x.find('p').get_text().rstrip()
 
         return abio, link
-    
      
+def assess(message):
+    
+    with open("params.json") as data:
+        ref = json.load(data)
+
+    allow = False
+    for x in ref["thank_you"]:
+        if re.match(f"^{x[:round(len(x)/2)]}.*", message, re.IGNORECASE):
+            return 1
+        else:
+            allow = True
+            
+    if allow is True:
+        reff = message.split(' ')
+        
+        if len(message.split(' ')) > len(ref["thank_you"]):
+            for x in ref["thank_you"]:
+                for i in range(len(reff)):
+                    if reff[i:i+len(x.split(' '))] == x.split(' '):
+                        return 0
+                    else:
+                        return False
+                
+        elif len(ref["thank_you"]) > len(message.split(' ')):
+            for i in range(len(reff)):
+                for x in ref["thank_you"]:
+                    if reff[i:i+len(x.split(' '))] == x.split(' '):
+                        return 0
+                    else:
+                        return False
+                
+                        
