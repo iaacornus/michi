@@ -26,6 +26,12 @@ Just to lighten the mood! This works by analyzing the message of the user, if th
 
 This returns the abstract of a given PubMed paper link, including the given URL.
 
+- [X] **OH is HYDROXIDE 🧪**
+
+This just sends HYDROXIDE 🧪 everything a `message.content.lower()` is "OH" or "oh".
+
+_Credits to BioBoat_
+
 # On development functions
 
 - [ ] **No homework dump message/reminder (automatic)**
