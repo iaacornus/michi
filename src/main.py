@@ -5,11 +5,11 @@ from discord.errors import ClientException
 from dotenv import load_dotenv
 from discord.ext import commands
 
-from func import get_defin, give_topic, bio_abs
-from params import params
+from func import get_defin, give_topic, bio_abs, assess
 
-import re
 from difflib import SequenceMatcher
+
+import json
 
 load_dotenv()
 
@@ -31,24 +31,34 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+    with open("params.json") as data:
+        ref = json.load(data)
+        
     # scam filter
     ratio = []
-    for x in params().scams:
+    for x in ref["scams"]:
         ratio.append(SequenceMatcher(None, x.lower(), message.content.lower()).ratio())
         
-    if (sum(ratio)/(len(params().scams)) > 0.2) and (max(ratio) > 0.85):    
+    if (sum(ratio)/(len(ref["scams"])) > 0.2) and (max(ratio) > 0.85):    
         await message.delete()
         await message.channel.send(f"<@{message.author.id}> no scam links ...")
         
     # thank you card
-    for x in params().thank_message:
-        for y in message.content.lower().split(' '):
-            if re.match(f"^{x[:round(len(x)/2)]}.*", y, re.IGNORECASE):
-                
-                await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
-                
-        break
+    thank_ratio = []
+    mess_as = assess(message.content.lower())
+    if mess_as == 1:
+        await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")
+        
     
+    elif mess_as == 0:
+            
+        for y in ref["thank_message"]:
+            thank_ratio.append(SequenceMatcher(None, y.lower(), message.content.lower()).ratio())
+                                    
+        if (sum(thank_ratio)/(len(ref["thank_message"])) > 0.2) and (max(thank_ratio) > 0.85):      
+            await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
+                
+                
     # hydroxide!
     if message.content.lower() == "oh":
         await message.channel.send("HYDROXIDE :test_tube:")
