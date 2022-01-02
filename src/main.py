@@ -10,11 +10,12 @@ from func import get_defin, give_topic, bio_abs, assess
 from difflib import SequenceMatcher
 
 import json
+import re
 
 load_dotenv()
 
 """REPLACE THESE"""
-TOKEN = #<TOKEN> os.getenv("DISCORD_TOKEN")
+TOKEN = "OTI2MDQ1OTA0NTIyMzM4MzE0.Yc19dA.KAWHUqEvLZTHHz1su8JgrR6TLH4"
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
 client = commands.Bot(command_prefix="--")
@@ -33,7 +34,13 @@ async def on_message(message):
 
     with open("params.json") as data:
         ref = json.load(data)
-        
+    
+    # delete --abs-bio command
+    if ("--abs-bio" and "https://") in message.content.lower():
+        await message.delete()
+    
+    
+    
     # scam filter
     ratio = []
     for x in ref["scams"]:
@@ -43,21 +50,34 @@ async def on_message(message):
         await message.delete()
         await message.channel.send(f"<@{message.author.id}> no scam links ...")
         
+        
+        
     # thank you card
-    thank_ratio = []
     mess_as = assess(message.content.lower())
     if mess_as == 1:
         await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")
         
-    
     elif mess_as == 0:
-            
-        for y in ref["thank_message"]:
-            thank_ratio.append(SequenceMatcher(None, y.lower(), message.content.lower()).ratio())
-                                    
-        if (sum(thank_ratio)/(len(ref["thank_message"])) > 0.2) and (max(thank_ratio) > 0.85):      
-            await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
+        thank_ratio = [] ; thank_ratioII = []
+        send = False
+        reff = [x for x in message.lower().split(' ') if not re.match(f"^<@.*", x, re.IGNORECASE)]
+        
+        for x in ref["thank_message"]:
+            if set(x.split(' ')) == set(reff):
+                await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")     
                 
+            else :
+                thank_ratio.append(SequenceMatcher(None, x.lower(), message.content.lower()).ratio())
+                thank_ratioII.append(SequenceMatcher(None, x.lower(), ' '.join([x for x in reff])).ratio())
+                
+                send = True
+            
+
+        if send == True:
+            if (max(thank_ratio) > 0.85) or (max(thank_ratioII) > 0.85):      
+                await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!!")    
+                
+            
                 
     # hydroxide!
     if message.content.lower() == "oh":
@@ -66,11 +86,13 @@ async def on_message(message):
     await client.process_commands(message)
 
 
+
 @client.command(name="topic", help="This function gives a topic from the science news for the week reported by LiveScience.")
 async def topic(ctx):
     dec = give_topic()
 
     await ctx.channel.send(f"<@{ctx.author.id}> the source is unfortunately down ...") if dec is False else await ctx.channel.send(f"<@{ctx.author.id}> {dec}")
+
 
 
 @client.command(name="define", help="This defines a given word/phrase using the summary from wikipedia.")
@@ -96,6 +118,7 @@ async def wiki(ctx, word):
         await ctx.channel.send(f"<@{ctx.author.id}> {mess}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {mess}\n{url}")
      
      
+     
 @client.command(name="abs-bio", help="This returns the abstract of a given PubMed link.")
 async def absBio(ctx, link):
     absBio, url = bio_abs(link)
@@ -118,6 +141,7 @@ async def absBio(ctx, link):
     else:
         await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"<@{ctx.author.id}> {absBio}\n{url}")     
         
+    
     
 client.run(TOKEN)
 
