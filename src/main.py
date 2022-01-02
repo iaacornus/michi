@@ -15,7 +15,7 @@ import re
 load_dotenv()
 
 """REPLACE THESE"""
-TOKEN = "OTI2MDQ1OTA0NTIyMzM4MzE0.Yc19dA.KAWHUqEvLZTHHz1su8JgrR6TLH4"
+TOKEN = #<TOKEN> os.getenv("DISCORD_TOKEN")
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
 client = commands.Bot(command_prefix="--")
