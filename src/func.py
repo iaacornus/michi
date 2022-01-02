@@ -82,30 +82,14 @@ def assess(message):
     with open("params.json") as data:
         ref = json.load(data)
 
-    allow = False
+    reff = [x for x in message.lower().split(' ') if not re.match(f"^<@.*", x, re.IGNORECASE)]
+    
     for x in ref["thank_you"]:
-        if re.match(f"^{x[:round(len(x)/2)]}.*", message, re.IGNORECASE):
+        if (re.match(f"^{x[:round(len(x)/2)]}.*", ' '.join([x for x in reff]), re.IGNORECASE)) or (re.match(f"^{x[:round(len(x)/2)]}.*", message, re.IGNORECASE)) or (set(x.split(' ')) == set(reff)):
             return 1
         else:
-            allow = True
-            
-    if allow is True:
-        reff = message.split(' ')
-        
-        if len(message.split(' ')) > len(ref["thank_you"]):
-            for x in ref["thank_you"]:
-                for i in range(len(reff)):
-                    if reff[i:i+len(x.split(' '))] == x.split(' '):
-                        return 0
-                    else:
-                        return False
-                
-        elif len(ref["thank_you"]) > len(message.split(' ')):
-            for i in range(len(reff)):
-                for x in ref["thank_you"]:
-                    if reff[i:i+len(x.split(' '))] == x.split(' '):
-                        return 0
-                    else:
-                        return False
-                
+            if x in message.lower():
+                return 0
+            else:
+                continue   
                         
