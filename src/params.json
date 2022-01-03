@@ -9,8 +9,11 @@
         "i have a free nitro link", "i have a free discord nitro", "i have a free discord link", "free discord nitro link",
         "https://discordsgift.com/", "https://freenitrogiveaway.com/", "https://discordnitro.com/", "https://.xyz", "http://.xyz",
         "http://.zy", "free discord nitro", "i am giving away free nitro", "free nitro giveaway", "random user winner",
-        "the crypto giveaway!"],
-
+        "the crypto giveaway!", "Get Discord Nitro for Free from Steam Store ", "Free 3 months Discord Nitro", "Click to get Nitro"
+        "Click to get nitro: https://discoord-app.com/welcome", "get nitro", "free months discord nitro",],
+    
+    "scam_links" : ["https://discoord-app.com/welcome", "https://discord-app.com/welcome", "https://dicsord-app.com/welcome"]
+ 
     "thank_you" : ["thanks", "thank you", "thx", "thank", "thank you very much", "arigato", "arigatogozaimasu",
         "gozaimasu", "arigatou", "arigatogozaimas", "mercie", "gracias", "gamsa", "gamsa hayeo"],
 
