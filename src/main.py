@@ -46,10 +46,7 @@ async def on_message(message):
     
     
     # scam filter
-    ratio = []
-    for x in ref["scams"]:
-        ratio.append(SequenceMatcher(None, x.lower(), message.content.lower()).ratio())
-        
+    ratio = [SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["scams"]]    
     if (sum(ratio)/(len(ref["scams"])) > 0.2) and (max(ratio) > 0.65):    
         await message.delete()
         await message.channel.send(f"<@{message.author.id}> {random.choice(ref['for_scam'])} {random.choice(ref['angry'])}...")
@@ -61,43 +58,40 @@ async def on_message(message):
         await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!! {random.choice(ref['happy'])}")
         
     elif mess_as == 0:        
-        thank_ratio = []
-        
-        for x in ref["thank_message"]:
-            thank_ratio.append(SequenceMatcher(None, x.lower(), message.content.lower()).ratio())    
-            
-        if max(thank_ratio) > 0.75:      
+        if max([SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["thank_message"]]) > 0.75:
             await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!! {random.choice(ref['happy'])}")    
     
     
     # greet the person
-    greet_ref = [SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["greetings"]]
-    if max(greet_ref) >= 0.8:
+    if max([SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8 :
         mess = random.choice(ref["greetings"])
+        
+        # this is the ternary operator form of the if-else block, however it is barely readable
         #await message.channel.send(f"{mess} {''.join(["~" for x in random.randint(1,3)])} <@{message.author.id}>!") if
         # random.choice([True, False]) is True else message.channel.send(f"{mess} <@{message.author.id}>!")
         if random.choice([True, False]) is True :
             await message.channel.send(f"{mess}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet'])}")
         else:
             await message.channel.send(f"{mess} <@{message.author.id}>! {random.choice(ref['greet'])}")
-        
+    
     # ping response
-    if f"<@!{client.user.id}>" in message.content.lower():
-        choice = random.choice([1,2,3])
-        # 1 is good mood
-        if choice == 1:
-            await message.channel.send(f"{random.choice(ref['greetings'])}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet']) if random.choice([True, False]) is True else random.choice(ref['happy'])}")
-        # no idea
-        elif choice == 2:
+    if f"<@!{client.user.id}>" == message.content.lower():
+        choice = random.choice([True, False])
+
+        if choice is True:
             await message.channel.send(f"{random.choice(ref['ping_res'])} <@{message.author.id}>?")
         # pissed off
         else:
             await message.channel.send(f"{random.choice(ref['angry_res'])} <@{message.author.id}> {random.choice(ref['angry'])}.")
-        
+            
+    elif max([SequenceMatcher(None, f"{x} <@!{client.user.id}>", message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8:
+        await message.channel.send(f"{random.choice(ref['greetings'])}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet']) if random.choice([True, False]) is True else random.choice(ref['happy'])}") 
+                
                            
     # hydroxide!s
     if message.content.lower() == "oh":
         await message.channel.send(f"HYDROXIDE :test_tube:\nA fuel yayyy! {random.choice(ref['happy'])}")
+    
     
     # delete the --source-code command
     if message.content.lower().rstrip() == "--source-code":
