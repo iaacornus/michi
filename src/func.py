@@ -11,12 +11,16 @@ import re
 
 def give_topic():
     
+    with open("params.json") as data:
+        ref = json.load(data)
+        
+            
     while True:
         sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
         link = "https://www.livescience.com/" + random.choice(sections)
         
         if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-            return "Ooppsss..., the link you gave is wrong...\nor down I guess?", 0
+            return f"Ooppsss..., the link you gave :  _{link}_ is wrong {random.choice(ref['sad'])}...\nor down I guess??? {random.choice(ref['confused'])}", 0
             
         else:
             page = requests.get(link)
@@ -35,6 +39,9 @@ def give_topic():
 def get_defin(define):
     wiki_wiki = wikipediaapi.Wikipedia('en')
     page_py = wiki_wiki.page(define)
+    
+    with open("params.json") as data:
+        ref = json.load(data)
 
     alpha = list("abcdefghijklmnopqrstuvwxyz")
     ALPHA = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -45,31 +52,30 @@ def get_defin(define):
             comb.append(x+y)
 
     if page_py.exists() is True:
-        
         return f"{str(page_py.summary)}", f"Full URL = {page_py.fullurl}\nCanonical URL = {page_py.canonicalurl}"
 
     else:
         if (define[0].upper()+define[1].lower()) not in comb:
-            return "the given term is not in Wikipedia, kindly correct the term and try again.", 0
+            return f"uhmm..., sorry the term '{define}' is not in Wikipedia.\nPlease kindly correct the term and try again ...", 0
         else:
             wiki = "https://en.wikipedia.org/wiki/Special:AllPages/" + define[0].upper() + define[1].lower()
             
             if urllib.request.urlopen(wiki).getcode() not in [x for x in range(200, 299)]:
-                return "the source is unfortunately down ...", 0
+                return f"the source is unfortunately down ... {random.choice(ref['sad'])}", 0
             else:
                 lang = enchant.Dict("en_US")
                 lang.check(define)
 
-                return f"maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}", 0
+                return f"um... maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}???? {random.choice(ref['confused'])}", 0
 
 def bio_abs(link):
     
-    if not re.match(f"^https://pubmed\.ncbi\.nlm\.nih\.gov/.*", link, re.IGNORECASE):
-        return f"Ooppsss..., the link : _{link}_ you gave is wrong...", 0
-        
+    with open("params.json") as data:
+        ref = json.load(data)
+    
     
     if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-        return "Ooppsss..., the link : _{link}_ you gave is wrong...\nor down I guess?", 0
+        return f"Ooppsss..., the link you gave is wrong {random.choice(ref['sad'])}...\nor down I guess? {random.choice(ref['confused'])}", 0
         
     else:
         page = requests.get(link)
