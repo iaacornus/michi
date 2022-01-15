@@ -32,6 +32,10 @@ This just sends HYDROXIDE 🧪 everything a `message.content.lower()` is "OH" or
 
 _Credits to BioBoat_
 
+- [X] **Greet/reply to greetings**
+
+The bot would reply to greetings made by the members with the references given in [params.py](https://github.com/yaacornus/cornusbot/blob/devel/src/params.json), with emoticons.
+
 # On development functions
 
 - [ ] **No homework dump message/reminder (automatic)**
@@ -69,6 +73,7 @@ The bot is currently in development phase, the link would be posted as soon as i
 - [X] Scientific paper abstract return
 - [ ] Scientific calculation
 - [ ] Simple science questions answer
+- [X] Greet
 
 # Contribution
 
