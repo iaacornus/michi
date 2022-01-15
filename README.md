@@ -4,13 +4,13 @@ The main purpose of this bot is for benefit of the author, yaacornus/iaacornus, 
 
 # Functions
 
-- [X] **Define word/phrase, --define <word/phrase>**
+- [X] **Define word/phrase, `--define <word/phrase>`**
 
 This defines a given word/phrase using the summary from [wikipedia](https://www.wikipedia.org/). This returns the definition of the word, if the page does exists, else depending on the case it would return a certain response.
 
   firstly, it would manually check if the word is in wikipedia, if it is not in dictionary it would return _"the given term is not in Wikipedia, kindly correct the term and try again."_ and if it is in dictionary it would return a word suggest given by `pyenchant`
 
-- [X] **Give interesting science topic, --topic**
+- [X] **Give interesting science topic, `--topic`**
 
 This function gives a topic from the science news for the week reported by [LiveScience](https://www.livescience.com/) it randomly selects on sub-sections of : `["space", "health", "planet-earth", "strange-news", "animals", "history"]` and picks a random news from the selected section.
 
@@ -22,7 +22,7 @@ This works by scanning all the messages of the user, if the message contain a sp
 
 Just to lighten the mood! This works by analyzing the message of the user, if the bot determined that it is saying thank you to particular person, it would emphasize it by giving it a reward like virtual object, which is _thank you card_.
 
-- [X] **Scientific paper abstract return (_currently only works with PubMed_), --abs-bio \<PubMed link\>**
+- [X] **Scientific paper abstract return (_currently only works with PubMed_), `--abs-bio \<PubMed link\>`**
 
 This returns the abstract of a given PubMed paper link, including the given URL.
 
@@ -35,6 +35,10 @@ _Credits to BioBoat_
 - [X] **Greet/reply to greetings**
 
 The bot would reply to greetings made by the members with the references given in [params.py](https://github.com/yaacornus/cornusbot/blob/devel/src/params.json), with emoticons.
+
+- [X] **Source code send, `--source-code`**
+
+This sends the source code repository of the bot for whoever who requested or issued the command, whatever the purpose is. Then the bot deletes the message of the author immediately after recognition followed by the deletion of its response (the source code with some response) after 60.0 seconds.
 
 # On development functions
 
