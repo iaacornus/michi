@@ -52,10 +52,13 @@ async def on_message(message):
         await message.channel.send(f"<@{message.author.id}> {random.choice(ref['for_scam'])} {random.choice(ref['angry'])}...")
         
         
+        
+        
     # thank you card
     mess_as = assess(message.content.lower())
     if mess_as == 1:
         await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!! {random.choice(ref['happy'])}")
+        
         
     elif mess_as == 0:        
         if max([SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["thank_message"]]) > 0.75:
@@ -101,6 +104,7 @@ async def on_message(message):
     await client.process_commands(message)
 
 
+
 @client.command(name="topic", help="This function gives a topic from the science news for the week reported by LiveScience.")
 async def topic(ctx):
     dec = give_topic()
@@ -140,6 +144,7 @@ async def wiki(ctx, word):
      
      
      
+     
 @client.command(name="abs-bio", help="This returns the abstract of a given PubMed link.")
 async def absBio(ctx, link):
     absBio, url = bio_abs(link)
@@ -174,6 +179,8 @@ async def src_code(ctx):
         ref = json.load(data)
 
     await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\nhttps://github.com/yaacornus/cornusbot", delete_after=60.0)
-            
+    
+    
+    
 client.run(TOKEN)
 
