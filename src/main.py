@@ -170,6 +170,14 @@ async def absBio(ctx, link):
         await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{absBio}\n{url}")     
     
         
+@client.command(name="source-code", help="Send the source code repository of the bot.")   
+async def src_code(ctx):
+    
+    with open("params.json") as data:
+        ref = json.load(data)
+
+    await ctx.reply(f"Here you go {random.choice(ref['happy'])}\nhttps://github.com/yaacornus/cornusbot", mention_author=True, delete_after=60.0)
+   
             
 client.run(TOKEN)
 
