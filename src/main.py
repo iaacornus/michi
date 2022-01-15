@@ -99,6 +99,9 @@ async def on_message(message):
     if message.content.lower() == "oh":
         await message.channel.send(f"HYDROXIDE :test_tube:\nA fuel yayyy! {random.choice(ref['happy'])}")
     
+    # delete the --source-code command
+    if message.content.lower().rstrip() == "--source-code":
+        await message.delete()
             
             
     await client.process_commands(message)
@@ -176,8 +179,7 @@ async def src_code(ctx):
     with open("params.json") as data:
         ref = json.load(data)
 
-    await ctx.reply(f"Here you go {random.choice(ref['happy'])}\nhttps://github.com/yaacornus/cornusbot", mention_author=True, delete_after=60.0)
-   
+    await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\nhttps://github.com/yaacornus/cornusbot", delete_after=60.0)
             
 client.run(TOKEN)
 
