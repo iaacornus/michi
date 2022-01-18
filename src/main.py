@@ -1,4 +1,3 @@
-import asyncio
 import discord
 from discord import user
 from discord import message
@@ -9,10 +8,9 @@ from discord.ext import commands
 from func import get_defin, give_topic, bio_abs, assess
 
 from difflib import SequenceMatcher
-
 import random
 import json
-import re
+
 
 load_dotenv()
 
@@ -20,30 +18,34 @@ load_dotenv()
 TOKEN = #<TOKEN> os.getenv("DISCORD_TOKEN")
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
-client = commands.Bot(command_prefix="--")
 
 print("STARTING BOT")
+
+client = commands.Bot(command_prefix="--")
+with open("params.json") as data:
+    ref = json.load(data)
+
 
 @client.event
 async def on_ready():
     print("[BOT ONLINE]")
 
+
 @client.event
-async def on_message(message):
+async def on_message(message, ref=ref):
       
     # preload
     if message.author == client.user:
         return
 
-    # open references
-    with open("params.json") as data:
-        ref = json.load(data)
-    
-    
-    # delete --abs-bio command
-    if ("--abs-bio" and "https://") in message.content.lower():
+
+    # delete --abs-bio and --source-code command
+    if (("--abs-bio" and "https://") in message.content.lower()) or (message.content.lower() == "--source-code"):
         await message.delete()
-    
+    # hydroxide!s
+    elif message.content.lower() == "oh":
+        await message.channel.send(f"HYDROXIDE :test_tube:\nA fuel yayyy! {random.choice(ref['happy'])}")
+
     
     # scam filter
     ratio = [SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["scams"]]    
@@ -74,7 +76,6 @@ async def on_message(message):
         else:
             await message.channel.send(f"{mess} <@{message.author.id}>! {random.choice(ref['greet'])}")
     
-    
     # ping response
     if f"<@!{client.user.id}>" == message.content.lower():
         choice = random.choice([True, False])
@@ -87,46 +88,28 @@ async def on_message(message):
             
     elif max([SequenceMatcher(None, f"{x} <@!{client.user.id}>", message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8:
         await message.channel.send(f"{random.choice(ref['greetings'])}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet']) if random.choice([True, False]) is True else random.choice(ref['happy'])}") 
-                
-                           
-    # hydroxide!s
-    if message.content.lower() == "oh":
-        await message.channel.send(f"HYDROXIDE :test_tube:\nA fuel yayyy! {random.choice(ref['happy'])}")
-    
-    
-    # delete the --source-code command
-    if message.content.lower().rstrip() == "--source-code":
-        await message.delete()
-            
+                    
             
     # process the commands
     await client.process_commands(message)
 
 
 @client.command(name="topic", help="This function gives a topic from the science news for the week reported by LiveScience.")
-async def topic(ctx):
+async def topic(ctx, ref=ref):
     dec = give_topic()
-    
-    with open("params.json") as data:
-        ref = json.load(data)
-        
+            
     await ctx.reply(f"sorry, the source is unfortunately down, please try again later... {random.choice(ref['sad'])}", mention_author=True) if dec is False else await ctx.reply(f"{dec} {random.choice(ref['surprised'])}", mention_author=True)
 
 
 
-@client.command(name="define", aliases=["whatis", "def", "wiki"], help="This defines a given word/phrase using the summary from wikipedia.")
-async def wiki(ctx, word):
+@client.command(name="define", aliases=["whatis", "def"], help="This defines a given word/phrase using the summary from wikipedia.")
+async def wiki(ctx, word, ref=ref):
     mess, url = get_defin(word)
     
-    with open("params.json") as data:
-        ref = json.load(data)
-    
-
     if len(mess) > 1500:
         wc = len(mess) ; delimiter = 1500 ; start = 0
-        stop = False
 
-        while stop is False:
+        while True:
             
             if wc > 1500 :
                 await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{str(mess)[start:delimiter]}-", mention_author=True) if start == 0 else await ctx.channel.send(f"-{str(mess)[start:delimiter]}-")
@@ -135,26 +118,21 @@ async def wiki(ctx, word):
             elif wc < 1500:
                 await ctx.channel.send(f"-{str(mess)[start:delimiter+wc]}")
                 await ctx.channel.send(url)
-                stop = True
-
+                break
     else:
         await ctx.reply(mess, mention_author=True) if url == 0 else await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{mess}\n{url}", mention_author=True)
      
      
      
 @client.command(name="abs-bio", help="This returns the abstract of a given PubMed link.")
-async def absBio(ctx, link):
+async def absBio(ctx, link, ref=ref):
     absBio, url = bio_abs(link)
-  
-    with open("params.json") as data:
-        ref = json.load(data)
-      
+         
       
     if len(absBio) > 1500:
         wc = len(absBio) ; delimiter = 1500 ; start = 0
-        stop = False
 
-        while stop is False:
+        while True:
             
             if wc > 1500 :
                 await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{str(absBio)[start:delimiter]}-") if start == 0 else await ctx.channel.send(f"-{str(absBio)[start:delimiter]}-")
@@ -163,21 +141,14 @@ async def absBio(ctx, link):
             elif wc < 1500:
                 await ctx.channel.send(f"-{str(absBio)[start:delimiter+wc]}")
                 await ctx.channel.send(url)
-                stop = True
-
+                break
     else:
         await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{absBio}\n{url}")     
     
         
 @client.command(name="source-code", help="Send the source code repository of the bot.")   
-async def src_code(ctx):
-    
-    with open("params.json") as data:
-        ref = json.load(data)
-
+async def src_code(ctx, ref=ref):
     await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\nhttps://github.com/yaacornus/cornusbot", delete_after=60.0)
-            
-            
             
 client.run(TOKEN)
 
