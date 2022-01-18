@@ -7,12 +7,12 @@
         "free nitro", "crypto giveaway", "free crypto", "free btc", "i offer a free adult membership", "dm me for the link",
         "I have a free offer dm me for the link", "I have a free nitro dm me", "I have a free offer, dm me",
         "i have a free nitro link", "i have a free discord nitro", "i have a free discord link", "free discord nitro link",
-        "https://discordsgift.com/", "https://freenitrogiveaway.com/", "https://discordnitro.com/", "https://.xyz", "http://.xyz",
-        "http://.zy", "free discord nitro", "i am giving away free nitro", "free nitro giveaway", "random user winner",
+        "free discord nitro", "i am giving away free nitro", "free nitro giveaway", "random user winner",
         "the crypto giveaway!", "free nitro", "free 3 months nitro", "free btc", "free 3 months nitro giveaway", "free steam",
         "i'm giving away my free months nitro", "free months nitro"],
 
-       "scam_links" : ["https://discrods.gift/VEBvBmFbECvcW"],
+    "scam_links" : ["https://discrods.gift/", "https://discordsgift.com/", "https://freenitrogiveaway.com/", "https://discordnitro.com/",
+                    "https://.xyz", "http://.xyz", "http://.zy"],
     
     "thank_you" : ["thanks", "thank you", "thx", "thank", "thank you very much", "arigato", "arigatogozaimasu",
         "gozaimasu", "arigatou", "arigatogozaimas", "mercie", "gracias", "gamsa", "gamsa hayeo"],
