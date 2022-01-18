@@ -52,13 +52,10 @@ async def on_message(message):
         await message.channel.send(f"<@{message.author.id}> {random.choice(ref['for_scam'])} {random.choice(ref['angry'])}...")
         
         
-        
-        
     # thank you card
     mess_as = assess(message.content.lower())
     if mess_as == 1:
         await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!! {random.choice(ref['happy'])}")
-        
         
     elif mess_as == 0:        
         if max([SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["thank_message"]]) > 0.75:
@@ -66,16 +63,17 @@ async def on_message(message):
     
     
     # greet the person
-    if max([SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8 :
+    if max([SequenceMatcher(None, x.lower(), message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8:
         mess = random.choice(ref["greetings"])
         
         # this is the ternary operator form of the if-else block, however it is barely readable
         #await message.channel.send(f"{mess} {''.join(["~" for x in random.randint(1,3)])} <@{message.author.id}>!") if
         # random.choice([True, False]) is True else message.channel.send(f"{mess} <@{message.author.id}>!")
-        if random.choice([True, False]) is True :
+        if random.choice([True, False]) is True:
             await message.channel.send(f"{mess}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet'])}")
         else:
             await message.channel.send(f"{mess} <@{message.author.id}>! {random.choice(ref['greet'])}")
+    
     
     # ping response
     if f"<@!{client.user.id}>" == message.content.lower():
@@ -101,8 +99,8 @@ async def on_message(message):
         await message.delete()
             
             
+    # process the commands
     await client.process_commands(message)
-
 
 
 @client.command(name="topic", help="This function gives a topic from the science news for the week reported by LiveScience.")
@@ -116,7 +114,7 @@ async def topic(ctx):
 
 
 
-@client.command(name="define", aliases=["whatis", "def"], help="This defines a given word/phrase using the summary from wikipedia.")
+@client.command(name="define", aliases=["whatis", "def", "wiki"], help="This defines a given word/phrase using the summary from wikipedia.")
 async def wiki(ctx, word):
     mess, url = get_defin(word)
     
@@ -141,7 +139,6 @@ async def wiki(ctx, word):
 
     else:
         await ctx.reply(mess, mention_author=True) if url == 0 else await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{mess}\n{url}", mention_author=True)
-     
      
      
      
@@ -179,8 +176,8 @@ async def src_code(ctx):
         ref = json.load(data)
 
     await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\nhttps://github.com/yaacornus/cornusbot", delete_after=60.0)
-    
-    
-    
+            
+            
+            
 client.run(TOKEN)
 
