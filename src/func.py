@@ -9,12 +9,13 @@ from bs4 import BeautifulSoup as bs
 import json
 import re
 
-def give_topic():
+
+with open("params.json") as data:
+    ref = json.load(data)
+
+
+def give_topic(ref=ref):
     
-    with open("params.json") as data:
-        ref = json.load(data)
-        
-            
     while True:
         sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
         link = "https://www.livescience.com/" + random.choice(sections)
@@ -36,13 +37,10 @@ def give_topic():
                     return topic
     
 
-def get_defin(define):
+def get_defin(define, ref=ref):
     wiki_wiki = wikipediaapi.Wikipedia('en')
     page_py = wiki_wiki.page(define)
     
-    with open("params.json") as data:
-        ref = json.load(data)
-
     alpha = list("abcdefghijklmnopqrstuvwxyz")
     ALPHA = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -68,12 +66,8 @@ def get_defin(define):
 
                 return f"um... maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}???? {random.choice(ref['confused'])}", 0
 
-def bio_abs(link):
-    
-    with open("params.json") as data:
-        ref = json.load(data)
-    
-    
+def bio_abs(link, ref=ref):
+        
     if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
         return f"Ooppsss..., the link you gave is wrong {random.choice(ref['sad'])}...\nor down I guess? {random.choice(ref['confused'])}", 0
         
@@ -87,11 +81,7 @@ def bio_abs(link):
 
         return abio, link
      
-def assess(message):
-    
-    with open("params.json") as data:
-        ref = json.load(data)
-
+def assess(message, ref=ref):
     reff = [x for x in message.lower().split(' ') if not re.match(f"^<@.*", x, re.IGNORECASE)]
     
     for x in ref["thank_you"]:
