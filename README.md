@@ -86,3 +86,7 @@ For contribution, just make a pull request and the code changes would be reviewe
 Join the [discord server](https://discord.gg/auArnV8Yz2) for testing ! :
 
 https://discord.gg/auArnV8Yz2
+
+# Credits
+
+Credits to [Chillihero's](https://github.com/nikolaischunk) _et al._ [discord and suspicious links repository]https://github.com/nikolaischunk/discord-phishing-links).
