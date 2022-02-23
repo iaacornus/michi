@@ -15,7 +15,7 @@ import os
 load_dotenv()
 
 """REPLACE THESE"""
-TOKEN = "OTI2MDQ1OTA0NTIyMzM4MzE0.Yc19dA.d8oVzCUjoONs7gEVJY2t2Awe-Lw"
+TOKEN = # bot token
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
 # preparation, this is where the bot update the database for phishing links,
