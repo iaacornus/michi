@@ -1,6 +1,6 @@
-# cornusbot
+# Michi
 
-The main purpose of this bot is for benefit of the author, yaacornus/iaacornus, but it can still be used and serve with significant help particular for Science servers. It is composed of various functions that would be beneficial for members.
+Mainly for Science servers. It is composed of various functions that would be beneficial for members.
 
 # Functions
 
