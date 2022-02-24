@@ -20,7 +20,7 @@ This function gives a topic from the science news for the week reported by [Live
 
 This works by scanning all the messages of the user, if the message contain a spam link, it would be removed while pinging the staff at the same time. But, depending on the permissions of the bot, if the bot is allowed to manage the server it would instead kick/ban the member instead of pinging the staff.
 
-The messages were referenced to repository of ~10000 discord phishing links provided by [Chillihero's](https://github.com/nikolaischunk) _et al._ [discord and suspicious links repository]https://github.com/nikolaischunk/discord-phishing-links). If it is not matched, its percent similarity were taken for further evaluation, and if it matched with at least 85%, the message will be removed.
+The messages were referenced to repository of ~10000 discord phishing links provided by [Chillihero's](https://github.com/nikolaischunk) _et al._ [discord and suspicious links repository](https://github.com/nikolaischunk/discord-phishing-links). If it is not matched, its percent similarity were taken for further evaluation, and if it matched with at least 85%, the message will be removed.
 
 - [X] **Thank you card feature (automatic)**
 
@@ -64,7 +64,7 @@ Then using git clone, the main branch (stable) repository can be cloned :
 
     git clone https://github.com/yaacornus/cornusbot
     
-However, the stable branch can be short on features. Unstable or [`devel`](https://github.com/yaacornus/cornusbot/tree/devel) branch can be cloned to accessa feature rich version, this is not as unstable as thought, and this has undergone preliminary testing before having the code commited.
+However, the stable branch can be short on features. Unstable or [`devel`](https://github.com/iaacornus/cornusbot/tree/devel) branch can be cloned to accessa feature rich version, this is not as unstable as thought, and this has undergone preliminary testing before having the code commited.
 
     git clone --branch devel https://github.com/yaacornus/cornusbot
 
@@ -85,7 +85,7 @@ The bot is currently in development phase, the link would be posted as soon as i
 
 # Contribution
 
-For contribution, just make a pull request and the code changes would be reviewed for merging with the branch.
+For contribution, fork the devel branch and just make a pull request and the code changes would be reviewed for merging with the branch.
 
 Join the [discord server](https://discord.gg/auArnV8Yz2) for testing ! :
 
