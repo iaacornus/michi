@@ -20,6 +20,8 @@ This function gives a topic from the science news for the week reported by [Live
 
 This works by scanning all the messages of the user, if the message contain a spam link, it would be removed while pinging the staff at the same time. But, depending on the permissions of the bot, if the bot is allowed to manage the server it would instead kick/ban the member instead of pinging the staff.
 
+The messages were referenced to repository of ~10000 discord phishing links provided by [Chillihero's](https://github.com/nikolaischunk) _et al._ [discord and suspicious links repository]https://github.com/nikolaischunk/discord-phishing-links). If it is not matched, its percent similarity were taken for further evaluation, and if it matched with at least 85%, the message will be removed.
+
 - [X] **Thank you card feature (automatic)**
 
 Just to lighten the mood! This works by analyzing the message of the user, if the bot determined that it is saying thank you to particular person, it would emphasize it by giving it a reward like virtual object, which is _thank you card_.
