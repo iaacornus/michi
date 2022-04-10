@@ -29,8 +29,11 @@ class database:
         ref2 = json.load(data)
 
     
-class functions():            
-    def give_topic(ref=database.ref):
+class functions:
+    def __init__(self) -> None:
+        pass
+                
+    def give_topic(ref=database.ref) -> str:
         
         while True:
             sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
@@ -53,7 +56,7 @@ class functions():
                         return topic
         
 
-    def get_defin(define, ref=database.ref):
+    def get_defin(define, ref=database.ref) -> str:
         wiki_wiki = wikipediaapi.Wikipedia('en')
         page_py = wiki_wiki.page(define)
         
@@ -82,7 +85,7 @@ class functions():
 
                     return f"um... maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}???? {random.choice(ref['confused'])}", 0
 
-    def bio_abs(link, ref=database.ref):
+    def bio_abs(link, ref=database.ref) -> str:
             
         if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
             return f"Ooppsss..., the link you gave is wrong {random.choice(ref['sad'])}...\nor down I guess? {random.choice(ref['confused'])}", 0
@@ -97,7 +100,7 @@ class functions():
 
             return abio, link
         
-    def thank_youCard(message, ref=database.ref):
+    def thank_youCard(message, ref=database.ref) -> bool:
         reff = [x for x in message.lower().split(' ') if not re.match(f"^<@.*", x, re.IGNORECASE)]
         
         for x in ref["thank_you"]:
@@ -109,7 +112,7 @@ class functions():
                 else:
                     continue   
                             
-    def filter(message, ref1=database.ref1, ref2=database.ref2):
+    def filter(message, ref1=database.ref1, ref2=database.ref2) -> bool:
         mess_content = message.split(' ')
         print(mess_content)
                 
