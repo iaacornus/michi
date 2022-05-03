@@ -5,6 +5,3 @@ discord.py
 python-dotenv
 wikipedia-api
 json
-numpy
-sympy
-scipy
