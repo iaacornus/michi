@@ -1,6 +1,3 @@
-import os
-from turtle import color
-from typing import final
 import wikipediaapi
 import urllib.request
 import enchant
@@ -18,7 +15,7 @@ from colors import COLORS
 
 color = COLORS
 
-class database:
+class functions:
     with open("./database/params.json") as data:
         ref = json.load(data)
 
@@ -28,19 +25,17 @@ class database:
     with open("./database/discord-links.json") as data:
         ref2 = json.load(data)
 
-    
-class functions:
     def __init__(self) -> None:
         pass
                 
-    def give_topic(ref=database.ref) -> str:
+    def give_topic(self) -> str:
         
         while True:
             sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
             link = "https://www.livescience.com/" + random.choice(sections)
             
             if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-                return f"Ooppsss..., the link you gave :  _{link}_ is wrong {random.choice(ref['sad'])}...\nor down I guess??? {random.choice(ref['confused'])}", 0
+                return f"Ooppsss..., the link you gave :  _{link}_ is wrong {random.choice(self.ref['sad'])}...\nor down I guess??? {random.choice(self.ref['confused'])}", 0
                 
             else:
                 page = requests.get(link)
@@ -56,7 +51,7 @@ class functions:
                         return topic
         
 
-    def get_defin(define, ref=database.ref) -> str:
+    def get_defin(self, define) -> str:
         wiki_wiki = wikipediaapi.Wikipedia('en')
         page_py = wiki_wiki.page(define)
         
@@ -78,17 +73,17 @@ class functions:
                 wiki = "https://en.wikipedia.org/wiki/Special:AllPages/" + define[0].upper() + define[1].lower()
                 
                 if urllib.request.urlopen(wiki).getcode() not in [x for x in range(200, 299)]:
-                    return f"the source is unfortunately down ... {random.choice(ref['sad'])}", 0
+                    return f"the source is unfortunately down ... {random.choice(self.ref['sad'])}", 0
                 else:
                     lang = enchant.Dict("en_US")
                     lang.check(define)
 
-                    return f"um... maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}???? {random.choice(ref['confused'])}", 0
+                    return f"um... maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}???? {random.choice(self.ref['confused'])}", 0
 
-    def bio_abs(link, ref=database.ref) -> str:
+    def bio_abs(self, link) -> str:
             
         if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-            return f"Ooppsss..., the link you gave is wrong {random.choice(ref['sad'])}...\nor down I guess? {random.choice(ref['confused'])}", 0
+            return f"Ooppsss..., the link you gave is wrong {random.choice(self.ref['sad'])}...\nor down I guess? {random.choice(ref['confused'])}", 0
             
         else:
             page = requests.get(link)
@@ -100,7 +95,7 @@ class functions:
 
             return abio, link
         
-    def thank_youCard(message, ref=database.ref) -> bool:
+    def thank_youCard(self, message) -> bool:
         reff = [x for x in message.lower().split(' ') if not re.match(f"^<@.*", x, re.IGNORECASE)]
         
         for x in ref["thank_you"]:
@@ -112,12 +107,12 @@ class functions:
                 else:
                     continue   
                             
-    def filter(message, ref1=database.ref1, ref2=database.ref2) -> bool:
+    def filter(self, message) -> bool:
         mess_content = message.split(' ')
         print(mess_content)
                 
         for x in mess_content:
-            if (x.lower().replace(' ','') in ref1) or (x.lower().replace(' ','') in ref2) or SM(None, x.lower(), ).ratio():
+            if (x.lower().replace(' ','') in self.ref1) or (x.lower().replace(' ','') in self.ref2) or SM(None, x.lower(), ).ratio():
                 return True
             else:
                 return False
