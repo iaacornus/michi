@@ -1,16 +1,14 @@
 import discord
+import random
+import os
+
+from func import functions
+from colors import COLORS
 from discord import user
 from discord.errors import ClientException
 from dotenv import load_dotenv
 from discord.ext import commands
-from matplotlib import colors
-
-from func import functions, database
-from colors import COLORS
-
 from difflib import SequenceMatcher as SM
-import random
-import os
 
 load_dotenv()
 
@@ -18,7 +16,7 @@ load_dotenv()
 TOKEN = # bot token
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
-# preparation, this is where the bot update the database for phishing links,
+# preparation, this is where the bot update the function for phishing links,
 #and this is where the bot itself starts and prepares the necessary for function
 
 function = functions
@@ -33,11 +31,11 @@ client = commands.Bot(command_prefix="~")
 async def on_ready():
     if input("Everything ready, clear the system? [y/N]").lower().replace(' ', '') == 'y':
         os.system("clear")
-    print(color.GREEN + "[BOT STARTED]" + color.END)
+    print(f"{color.GREEN}> BOT STARTED{color.END}")
 
 
 @client.event
-async def on_message(message, ref=database.ref, ref1=database.ref1, ref2=database.ref2):
+async def on_message(message, ref=function.ref, ref1=function.ref1, ref2=function.ref2):
       
     # preload
     if message.author == client.user:
@@ -62,12 +60,9 @@ async def on_message(message, ref=database.ref, ref1=database.ref1, ref2=databas
             await message.channel.send(f"<@{message.author.id}> {random.choice(ref['for_scam'])} {random.choice(ref['angry'])}...")
         
         # re-run the message by getting the percent different from the messages into the scam links
-        # with in the database, and if it is greater than 85%, delete the message and warn user
+        # with in the function, and if it is greater than 85%, delete the message and warn user
         else:
-            ratio = [SM(None, x.lower(), sample).ratio()
-                    for x in ref1["domains"]] + [SM(None, y.lower(), sample).ratio()
-                                            for y in ref2["domains"]] + [SM(None, z.lower(), sample).ratio()
-                                                                         for z in ref["scams"]] 
+            ratio = [SM(None, x.lower(), sample).ratio() for x in ref1["domains"]] + [SM(None, y.lower(), sample).ratio() for y in ref2["domains"]] + [SM(None, z.lower(), sample).ratio() for z in ref["scams"]] 
                                                      
             if max(ratio) > 0.85:    
                 await message.delete()
@@ -123,25 +118,23 @@ async def on_message(message, ref=database.ref, ref1=database.ref1, ref2=databas
     await client.process_commands(message)
 
 
-@client.command(name="topic", aliases=["anything-interesting"],
+@client.command(name="topic", aliases=["anything-interesting"], 
                 help="This function gives a topic from the science news for the week reported by LiveScience.")
-async def topic(ctx, ref=database.ref):
+async def topic(ctx, ref=function.ref):
     dec = function.give_topic()
-            
+    
     await ctx.reply(f"sorry, the source is unfortunately down, please try again later... {random.choice(ref['sad'])}", mention_author=True) if dec is False else await ctx.reply(f"{dec} {random.choice(ref['surprised'])}", mention_author=True)
-
 
 
 @client.command(name="define", aliases=["whatis", "def"],
                 help="This defines a given word/phrase using the summary from wikipedia.")
-async def wiki(ctx, word, ref=database.ref):
+async def wiki(ctx, word, ref=function.ref):
     mess, url = function.get_defin(word)
     
     if len(mess) > 1500:
         wc = len(mess) ; delimiter = 1500 ; start = 0
 
-        while True:
-            
+        while True:            
             if wc > 1500 :
                 await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{str(mess)[start:delimiter]}-", mention_author=True) if start == 0 else await ctx.channel.send(f"-{str(mess)[start:delimiter]}-")
                 start += 1500 ; delimiter += 1500 ; wc -= 1500      
@@ -152,12 +145,11 @@ async def wiki(ctx, word, ref=database.ref):
                 break
     else:
         await ctx.reply(mess, mention_author=True) if url == 0 else await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{mess}\n{url}", mention_author=True)
-     
-     
+    
      
 @client.command(name="abs-bio", aliases=["fetch", "paper"],
                 help="This returns the abstract of a given PubMed link.")
-async def absBio(ctx, link, ref=database.ref):
+async def absBio(ctx, link, ref=function.ref):
     absBio, url = function.bio_abs(link)
          
     if len(absBio) > 1500:
@@ -179,9 +171,8 @@ async def absBio(ctx, link, ref=database.ref):
         
 @client.command(name="src-code",
                 help="Send the source code repository of the bot.")   
-async def src_code(ctx, ref=database.ref):
+async def src_code(ctx, ref=function.ref):
     await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\nhttps://github.com/iaacornus/cornusbot", delete_after=60.0)
             
  
 client.run(TOKEN)
-
