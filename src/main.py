@@ -1,178 +1,224 @@
 import discord
-import random
 import os
+import json
+from random import choice as ch
 
+from rich.console import Console
 from func import functions
-from colors import COLORS
-from discord import user
-from discord.errors import ClientException
 from dotenv import load_dotenv
 from discord.ext import commands
 from difflib import SequenceMatcher as SM
 
+
 load_dotenv()
 
-"""REPLACE THESE"""
-TOKEN = # bot token
+# TOKEN = # bot token
 #guild_ids = <GUILD_ID> #os.getenv("DISCORD_GUILD")
 
-# preparation, this is where the bot update the function for phishing links,
-#and this is where the bot itself starts and prepares the necessary for function
+if __name__ != "__main__":
+    raise SystemExit("Exception raised.")
 
-function = functions
-color = COLORS()
-
-if __name__ == "__main__":
-    pass
-
+# ----------------------------------------------------------------
+# load the data as well as other classes needed for use
+# ----------------------------------------------------------------
+function = functions()
+console = Console()
 client = commands.Bot(command_prefix="~")
 
+with open("../database/params.json") as data:
+    ref = json.load(data) # emotes, thank references, and greets
+
+with open("../database/suspicious-links.json") as data1:
+    ref1 = json.load(data1) # suspicious links lists
+
+with open("../database/discord-links.json") as data:
+    ref2 = json.load(data) # confirmed phishing links lists
+
+# ----------------------------------------------------------------
 @client.event
 async def on_ready():
-    if input("Everything ready, clear the system? [y/N]").lower().replace(' ', '') == 'y':
+    if input("Everything ready, clear the system? [y/N]") == 'y':
         os.system("clear")
-    print(f"{color.GREEN}> BOT STARTED{color.END}")
+    console.log("[bold green]> BOT STARTED[/bold green]")
 
 
 @client.event
-async def on_message(message, ref=function.ref, ref1=function.ref1, ref2=function.ref2):
-      
-    # preload
+async def on_message(message):
+    msg = message.content.lower()
+    mess_indv = msg.split(" ")
+    msg_author = message.author.id
+
     if message.author == client.user:
         return
 
-
     # delete --abs-bio and --source-code command
-    if (("~abs-bio" and "https://") in message.content.lower()) or (message.content.lower() == "~source-code"):
+    if (("~abs-bio" and "https://") in msg) or (msg == "~source-code"):
         await message.delete()
-        
-    # hydroxide!s
-    elif message.content.lower() == "oh":
-        await message.channel.send(f"HYDROXIDE :test_tube:\nA fuel yayyy! {random.choice(ref['happy'])}")
+    elif msg == "oh": # hydroxide!s
+        await message.channel.send(
+            f"HYDROXIDE :test_tube:\nA fuel yayyy! {ch(ref['happy'])}"
+        )
 
-
-    # scam filter 
-    mess_indv = message.content.lower().split(' ')
-    
-    for sample in mess_indv:    
-        if function.filter(sample) is True:
+    # scam filter
+    for words in mess_indv:
+        if function.filter(words):
             await message.delete()
-            await message.channel.send(f"<@{message.author.id}> {random.choice(ref['for_scam'])} {random.choice(ref['angry'])}...")
-        
-        # re-run the message by getting the percent different from the messages into the scam links
-        # with in the function, and if it is greater than 85%, delete the message and warn user
+            await message.channel.send(
+                f"<@{msg_author}> {ch(ref['for_scam'])} {ch(ref['angry'])}..."
+            )
         else:
-            ratio = [SM(None, x.lower(), sample).ratio() for x in ref1["domains"]] + [SM(None, y.lower(), sample).ratio() for y in ref2["domains"]] + [SM(None, z.lower(), sample).ratio() for z in ref["scams"]] 
-                                                     
-            if max(ratio) > 0.85:    
+            ratio = (
+                [SM(None, ref_dom, words).ratio() for ref_dom in ref1["domains"]]
+                + [SM(None, ref_dom_2, words).ratio() for ref_dom_2 in ref2["domains"]]
+                + [SM(None, ref_dom_3, words).ratio() for ref_dom_3 in ref["scams"]]
+            )
+
+            if max(ratio) > 0.85:
                 await message.delete()
-                await message.channel.send(f"<@{message.author.id}> {random.choice(ref['for_scam'])} {random.choice(ref['angry'])}...")
+                await message.channel.send(
+                    f"<@{msg_author}> {ch(ref['for_scam'])} {ch(ref['angry'])}..."
+                )
             else:
-                continue   
-             
+                continue
+
         break
-    
 
-    # thank you card
-    mess_as = function.thank_youCard(message.content.lower())   
-    if mess_as is True:
-        await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!! {random.choice(ref['happy'])}")
-        
-    elif mess_as is False:        
-        if max([SM(None, x.lower(), message.content.lower()).ratio() for x in ref["thank_message"]]) > 0.75:
-            await message.channel.send(f"<@{message.author.id}> gave you a _thank you_ card!! {random.choice(ref['happy'])}")    
-    
+    if function.thank_you_card(msg, ref=ref):
+        await message.channel.send(
+            f"<@{msg_author}> gave you a _thank you_ card!! {ch(ref['happy'])}"
+        )
+    else:
+        if max(
+                [SM(None, ref_thank, msg).ratio() for ref_thank in ref["thank_message"]]
+            ) > 0.75:
+            await message.channel.send(
+                f"<@{msg_author}> gave you a _thank you_ card!! {ch(ref['happy'])}"
+            )
 
-    # greet the person
-    if max([SM(None, x.lower(), message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8:
-        mess = random.choice(ref["greetings"])
-        
-        if random.choice([True, False]) is True:
-            await message.channel.send(f"{mess}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet'])}")
-        else:
-            await message.channel.send(f"{mess} <@{message.author.id}>! {random.choice(ref['greet'])}")
+    # greeter
+    if max([SM(None, ref_greet, msg).ratio() for ref_greet in ref["greetings"]]) > 0.8:
+        greet_msg = ch(ref["greetings"])
+        await message.channel.send(
+            f"{greet_msg} <@{msg_author}>! {ch(ref['greet'])}"
+        )
+    elif max(
+            [SM(None, f"{ref_greet} <@!{client.user.id}>", msg).ratio() for ref_greet in ref["greetings"]]
+        ) > 0.8:
+        emo_choice = ch(["greet", "happy"])
+        await message.channel.send(
+            f"{ch(ref['greetings'])} <@{msg_author}>! {ch(ref[{emo_choice}])}"
+        )
 
-    
-    """ this ping response, maybe too long and complex or complicated, however it was
-    designed to be able to display some sort of pseudoemotions, or reaction from the bot""" 
+
     # ping response
-    if f"<@!{message.author.id}>" == f"<@!919442885248692235>":
-        await message.channel.send(f"Hey boss! {random.choice(ref['happy'])}")                    
-   
-    elif f"<@!{client.user.id}>" == message.content.lower():
-        choice = random.choice([True, False])
+    if f"<@!{msg_author}>" == f"<@!919442885248692235>":
+        await message.channel.send(f"Hey boss! {ch(ref['happy'])}")
+    elif f"<@!{client.user.id}>" == msg:
+        if ch([True, False]): # neutral response
+            await message.channel.send(
+                f"{ch(ref['ping_res'])} <@{msg_author}>?"
+            )
+        else: # pissed off
+            await message.channel.send(
+                f"{ch(ref['angry_res'])} <@{msg_author}> {ch(ref['angry'])}."
+            )
 
-        # neutral response
-        if choice is True:
-            await message.channel.send(f"{random.choice(ref['ping_res'])} <@{message.author.id}>?")
-        # pissed off
-        else:
-            await message.channel.send(f"{random.choice(ref['angry_res'])} <@{message.author.id}> {random.choice(ref['angry'])}.")
-        
-    # happy or respectful response
-    elif max([SM(None, f"{x} <@!{client.user.id}>", message.content.lower()).ratio() for x in ref["greetings"]]) > 0.8:
-        await message.channel.send(f"{random.choice(ref['greetings'])}{''.join(['~' for x in range(random.randint(1,3))])} <@{message.author.id}>! {random.choice(ref['greet']) if random.choice([True, False]) is True else random.choice(ref['happy'])}") 
-
-            
     # process the commands
     await client.process_commands(message)
 
 
-@client.command(name="topic", aliases=["anything-interesting"], 
-                help="This function gives a topic from the science news for the week reported by LiveScience.")
-async def topic(ctx, ref=function.ref):
-    dec = function.give_topic()
-    
-    await ctx.reply(f"sorry, the source is unfortunately down, please try again later... {random.choice(ref['sad'])}", mention_author=True) if dec is False else await ctx.reply(f"{dec} {random.choice(ref['surprised'])}", mention_author=True)
+@client.command(
+        name="topic", aliases=["anything-interesting"],
+        help="This function gives a topic from the science news for the week reported by LiveScience."
+    )
+async def topic(ctx):
+    topic = function.give_topic()
+    if not topic:
+        await ctx.reply(
+            f"sorry, the source is unfortunately down, please try again later... {ch(ref['sad'])}",
+            mention_author=True
+        )
+    else:
+        await ctx.reply(f"{dec} {ch(ref['surprised'])}", mention_author=True)
 
 
-@client.command(name="define", aliases=["whatis", "def"],
-                help="This defines a given word/phrase using the summary from wikipedia.")
-async def wiki(ctx, word, ref=function.ref):
+@client.command(
+        name="define", aliases=["whatis", "def"],
+        help="This defines a given word/phrase using the summary from wikipedia."
+    )
+async def wiki(ctx, word):
     mess, url = function.get_defin(word)
-    
-    if len(mess) > 1500:
-        wc = len(mess) ; delimiter = 1500 ; start = 0
 
-        while True:            
+    if len(mess) > 1500:
+        wc, delimiter, start = len(mess), 1500, 0
+
+        while True:
             if wc > 1500 :
-                await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{str(mess)[start:delimiter]}-", mention_author=True) if start == 0 else await ctx.channel.send(f"-{str(mess)[start:delimiter]}-")
-                start += 1500 ; delimiter += 1500 ; wc -= 1500      
-                
+                if start == 0:
+                    await ctx.reply(
+                        f"Here you go <@{ctx.author.id}>! {ch(ref['happy'])}\n{mess[start:delimiter]}-",
+                        mention_author=True
+                    )
+                else:
+                    await ctx.channel.send(f"-{mess[start:delimiter]}-")
+                start += 1500 ; delimiter += 1500 ; wc -= 1500
+
             elif wc < 1500:
-                await ctx.channel.send(f"-{str(mess)[start:delimiter+wc]}")
+                await ctx.channel.send(f"-{mess[start:delimiter+wc]}")
                 await ctx.channel.send(url)
                 break
     else:
-        await ctx.reply(mess, mention_author=True) if url == 0 else await ctx.reply(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{mess}\n{url}", mention_author=True)
-    
-     
-@client.command(name="abs-bio", aliases=["fetch", "paper"],
-                help="This returns the abstract of a given PubMed link.")
-async def absBio(ctx, link, ref=function.ref):
+        if not url:
+            await ctx.reply(mess, mention_author=True)
+        else:
+            await ctx.reply(
+                f"Here you go <@{ctx.author.id}>! {ch(ref['happy'])}\n{mess}\n{url}",
+                mention_author=True
+            )
+
+
+@client.command(
+        name="abs-bio", aliases=["fetch", "paper"],
+        help="This returns the abstract of a given PubMed link."
+    )
+async def absBio(ctx, link):
     absBio, url = function.bio_abs(link)
-         
+
     if len(absBio) > 1500:
         wc = len(absBio) ; delimiter = 1500 ; start = 0
 
         while True:
-            
             if wc > 1500 :
-                await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{str(absBio)[start:delimiter]}-") if start == 0 else await ctx.channel.send(f"-{str(absBio)[start:delimiter]}-")
-                start += 1500 ; delimiter += 1500 ; wc -= 1500      
-                
+                if start == 0:
+                    await ctx.channel.send(
+                        f"Here you go <@{ctx.author.id}>! {ch(ref['happy'])}\n{str(absBio)[start:delimiter]}-"
+                    )
+                else:
+                    await ctx.channel.send(f"-{str(absBio)[start:delimiter]}-")
+                start += 1500 ; delimiter += 1500 ; wc -= 1500
+
             elif wc < 1500:
                 await ctx.channel.send(f"-{str(absBio)[start:delimiter+wc]}")
                 await ctx.channel.send(url)
                 break
     else:
-        await ctx.channel.send(f"<@{ctx.author.id}> {absBio}") if url == 0 else await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\n{absBio}\n{url}")     
-    
-        
-@client.command(name="src-code",
-                help="Send the source code repository of the bot.")   
-async def src_code(ctx, ref=function.ref):
-    await ctx.channel.send(f"Here you go <@{ctx.author.id}>! {random.choice(ref['happy'])}\nhttps://github.com/iaacornus/cornusbot", delete_after=60.0)
-            
- 
+        if not url:
+            await ctx.channel.send(f"<@{ctx.author.id}> {absBio}")
+        else:
+            await ctx.channel.send(
+                f"Here you go <@{ctx.author.id}>! {ch(ref['happy'])}\n{absBio}\n{url}"
+            )
+
+
+@client.command(
+        name="src-code",
+        help="Send the source code repository of the bot."
+    )
+async def src_code(ctx):
+    await ctx.channel.send(
+        f"Here you go {ch(ref['happy'])}!https://github.com/iaacornus/cornusbot",
+        delete_after=60.0, mention_author=True
+    )
+
+
 client.run(TOKEN)
