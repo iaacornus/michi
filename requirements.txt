@@ -4,4 +4,3 @@ requests
 discord.py
 python-dotenv
 wikipedia-api
-json    
