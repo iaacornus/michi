@@ -1,60 +1,55 @@
-import wikipediaapi
+from random import choice as ch
+import re
 import urllib.request
-import enchant
-
-from bs4 import BeautifulSoup as bs
 from difflib import SequenceMatcher as SM
 
+import wikipediaapi
+import enchant
 import requests
-import random
-import json
-import re
-import os
+from bs4 import BeautifulSoup as bs
 
 from colors import COLORS
 
 color = COLORS
 
+
 class functions:
-    with open("./database/params.json") as data:
-        ref = json.load(data)
-
-    with open("./database/suspicious-links.json") as data1:
-        ref1 = json.load(data1)
-
-    with open("./database/discord-links.json") as data:
-        ref2 = json.load(data)
-
     def __init__(self) -> None:
         pass
-                
+
     def give_topic(self) -> str:
-        
         while True:
-            sections = ["space", "health", "planet-earth", "strange-news", "animals", "history"]
-            link = "https://www.livescience.com/" + random.choice(sections)
-            
+            sections = [
+                "space",
+                "health",
+                "planet-earth",
+                "strange-news",
+                "animals",
+                "history"
+            ]
+            link = "https://www.livescience.com/" + ch(sections)
+
             if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-                return f"Ooppsss..., the link you gave :  _{link}_ is wrong {random.choice(self.ref['sad'])}...\nor down I guess??? {random.choice(self.ref['confused'])}", 0
-                
+                return (
+                    f"Ooppsss..., the link you gave :  _{link}_ is wrong {ch(self.ref['sad'])}...\nor down I guess??? {ch(self.ref['confused'])}",
+                    False)
+
             else:
                 page = requests.get(link)
                 soup = bs(page.content, "html.parser")
                 topics = (soup.find_all("h3", class_="article-name"))
 
-                topic = str(random.choice(topics))[25:-5]
-                for x in range(100):
-                    if ("top" or str(x) or "top " + str(x) or "best") in str(topic):
+                topic = str(ch(topics))[25:-5]
+                for i in range(100):
+                    if ("top" or str(i) or f"top {i}" or "best") in str(topic):
                         continue
-                    
-                    else :
+                    else:
                         return topic
-        
 
     def get_defin(self, define) -> str:
         wiki_wiki = wikipediaapi.Wikipedia('en')
         page_py = wiki_wiki.page(define)
-        
+
         alpha = list("abcdefghijklmnopqrstuvwxyz")
         ALPHA = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
@@ -63,56 +58,61 @@ class functions:
             for y in alpha:
                 comb.append(x+y)
 
-        if page_py.exists() is True:
-            return f"{str(page_py.summary)}", f"Full URL = {page_py.fullurl}\nCanonical URL = {page_py.canonicalurl}"
+        if page_py.exists():
+            return (
+                f"{str(page_py.summary)}",
+                f"Full URL = {page_py.fullurl}",
+                f"Canonical URL = {page_py.canonicalurl}"
+            )
 
         else:
-            if (define[0].upper()+define[1].lower()) not in comb:
-                return f"uhmm..., sorry the term '{define}' is not in Wikipedia.\nPlease kindly correct the term and try again ...", 0
-            else:
-                wiki = "https://en.wikipedia.org/wiki/Special:AllPages/" + define[0].upper() + define[1].lower()
-                
-                if urllib.request.urlopen(wiki).getcode() not in [x for x in range(200, 299)]:
-                    return f"the source is unfortunately down ... {random.choice(self.ref['sad'])}", 0
-                else:
-                    lang = enchant.Dict("en_US")
-                    lang.check(define)
+            lang = enchant.Dict("en_US")
+            lang.check(define)
+            suggestion = str(lang.suggest(define))[1:-1]
 
-                    return f"um... maybe you mean {str(lang.suggest(define)).replace('[', '').replace(']', '')}???? {random.choice(self.ref['confused'])}", 0
+            return (
+                f"um... maybe you mean {suggestion}???? {ch(self.ref['confused'])}",
+                False
+            )
 
     def bio_abs(self, link) -> str:
-            
         if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
-            return f"Ooppsss..., the link you gave is wrong {random.choice(self.ref['sad'])}...\nor down I guess? {random.choice(ref['confused'])}", 0
-            
+            return (
+                f"Ooppsss..., the link you gave is wrong {ch(self.ref['sad'])}...\nor down I guess? {ch(ref['confused'])}",
+                False
+            )
+
         else:
             page = requests.get(link)
             soup = bs(page.content, "html.parser")
             results = (soup.find_all("div", id="enc-abstract"))
 
-            for x in results:
-                abio = x.find('p').get_text().rstrip()
+            for item in results:
+                abstract = item.find("p").get_text().rstrip()
 
-            return abio, link
-        
-    def thank_youCard(self, message) -> bool:
-        reff = [x for x in message.lower().split(' ') if not re.match(f"^<@.*", x, re.IGNORECASE)]
-        
-        for x in ref["thank_you"]:
-            if (re.match(f"^{x[:round(len(x)/2)]}.*", ' '.join([x for x in reff]), re.IGNORECASE)) or (re.match(f"^{x[:round(len(x)/2)]}.*", message, re.IGNORECASE)) or (set(x.split(' ')) == set(reff)):
+            return abstract, link
+
+    def thank_you_card(self, message, ref) -> bool:
+        word_ref = [word for word in message.lower().split(" ") if not re.match(f"^<@.*", word, re.IGNORECASE)]
+
+        for ref_ty in ref["thank_you"]:
+            pattern = f"^{ref_ty[:round(len(ref_ty)/2)]}.*"
+            evaluate_1 = re.match(pattern, " ".join([word for word in word_ref]), re.IGNORECASE)
+            evaluate_2 = re.match(pattern, message, re.IGNORECASE)
+
+            if set(ref_ty.split(" ")) == set(word_ref) or evaluate_1 or evaluate_2:
                 return True
             else:
-                if x in message.lower():
+                if ref_ty in message:
                     return False
                 else:
-                    continue   
-                            
+                    continue
+
     def filter(self, message) -> bool:
-        mess_content = message.split(' ')
-        print(mess_content)
-                
-        for x in mess_content:
-            if (x.lower().replace(' ','') in self.ref1) or (x.lower().replace(' ','') in self.ref2) or SM(None, x.lower(), ).ratio():
+        msg_content = message.lower().split(" ").replace(" ","")
+
+        for words in msg_content:
+            if (words in self.ref1) or (words in self.ref2):
                 return True
             else:
                 return False
