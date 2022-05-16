@@ -4,8 +4,6 @@ Mainly for Science servers. It is composed of various functions that would be be
 
 # Functions
 
-Since comit `817482d83b8ee8e333e68bca5394b4f4d56468e4`, the bot used `~` as command prefix instead of `--`, mainly for easier use.
-
 - [X] **Define word/phrase, `~define <word/phrase>, aliases=["def", "whatis"]`**
 
 This defines a given word/phrase using the summary from [wikipedia](https://www.wikipedia.org/). This returns the definition of the word, if the page does exists, else depending on the case it would return a certain response.
@@ -38,7 +36,7 @@ _Credits to BioBoat_
 
 - [X] **Greet/reply to greetings**
 
-The bot would reply to greetings made by the members with the references given in [params.py](https://github.com/yaacornus/cornusbot/blob/devel/src/params.json), with emoticons.
+The bot would reply to greetings made by the members with the references given in [params.py](https://github.com/iaacornus/cornusbot/blob/devel/src/params.json), with emoticons.
 
 - [X] **Source code send, `~src-code`**
 
@@ -56,21 +54,19 @@ Science servers are often thought as answer source, commonly bastard users dump 
 
 # Setup for own hosting
 
+The bot is for own/personal use, thus you need to host it your own.
+
 The requirements of the bots are listed in `requirements.txt` and can be installed with
 
     pip install -r requirements.txt
-    
-Then using git clone, the main branch (stable) repository can be cloned :
 
-    git clone https://github.com/yaacornus/cornusbot
-    
+Then clone the repository:
+
+    git clone https://github.com/iaacornus/cornusbot
+
 However, the stable branch can be short on features. Unstable or [`devel`](https://github.com/iaacornus/cornusbot/tree/devel) branch can be cloned to accessa feature rich version, this is not as unstable as thought, and this has undergone preliminary testing before having the code commited.
 
     git clone --branch devel https://github.com/yaacornus/cornusbot
-
-# Invite
-
-The bot is currently in development phase, the link would be posted as soon as it enters the stable version.
 
 # Functions to be added
 
@@ -85,12 +81,9 @@ The bot is currently in development phase, the link would be posted as soon as i
 
 # Contribution
 
-For contribution, fork the devel branch and just make a pull request and the code changes would be reviewed for merging with the branch.
+For contribution, fork the `devel` branch and just make a pull request and the code changes would be reviewed for merging with the branch.
 
-Join the [discord server](https://discord.gg/auArnV8Yz2) for testing ! :
-
-https://discord.gg/auArnV8Yz2
-
+Join the [discord server](https://discord.gg/auArnV8Yz2) for testing!
 # Credits
 
-Credits to [Chillihero's](https://github.com/nikolaischunk) _et al._ [discord and suspicious links repository]https://github.com/nikolaischunk/discord-phishing-links).
+Credits to [Chillihero's](https://github.com/nikolaischunk) _et al._ [discord and suspicious links repository](https://github.com/nikolaischunk/discord-phishing-links).
