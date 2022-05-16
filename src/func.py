@@ -31,7 +31,7 @@ class functions:
 
             if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
                 return (
-                    f"Ooppsss..., the link you gave :  _{link}_ is wrong {ch(self.ref['sad'])}...\nor down I guess??? {ch(self.ref['confused'])}",
+                    f"Ooppsss..., the link is down I guess??? {ch(self.ref['sad'])}",
                     False)
 
             else:
@@ -78,7 +78,7 @@ class functions:
     def bio_abs(self, link) -> str:
         if urllib.request.urlopen(link).getcode() not in [x for x in range(200, 299)]:
             return (
-                f"Ooppsss..., the link you gave is wrong {ch(self.ref['sad'])}...\nor down I guess? {ch(ref['confused'])}",
+                f"Ooppsss..., the link is down I guess? {ch(self.ref['sad'])}",
                 False
             )
 
